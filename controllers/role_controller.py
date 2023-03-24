@@ -7,7 +7,7 @@ class RoleController:
             'NhanVienQT', 'Admin123', 'SELECT * FROM ROLE_TAB_PRIVS')
         return result
 
-    def Add_Role(self, role_name, ):
+    def Add_Role(self, role_name, password):
         print("Add")
 
     def Recall_Role(self, role_name, table_name, privilege):
