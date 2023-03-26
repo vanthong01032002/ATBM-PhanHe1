@@ -484,7 +484,6 @@ class RoleView:
         self.txt_Privilege_recall_sys.setText(self.data_Roles2["Privilege"])
     
     def Handle_Recall_Role_Table(self):
-        print("hihi")
         result = self.role_controller.Recall_Role_Table(
             self.data_Roles1["Role Name"], self.data_Roles1["Table Name"], self.data_Roles1["Privilege"])
         return result
