@@ -1,4 +1,5 @@
 import sys
+import messagebox
 # from PySide2 import QtWidgets
 from PyQt5 import QtCore, QtWidgets
 
@@ -28,33 +29,33 @@ class RoleView:
                            "Implicit": ""}
 
         # Khởi tạo table widget để hiển thị danh sách người dùng
-        table_widget = QtWidgets.QTableWidget()
-        table_widget.setColumnCount(7)  # Đặt số lượng cột cho table widget
-        table_widget.setHorizontalHeaderLabels(["Role Name",
+        self.table_widget = QtWidgets.QTableWidget()
+        self.table_widget.setColumnCount(7)  # Đặt số lượng cột cho table widget
+        self.table_widget.setHorizontalHeaderLabels(["Role Name",
                                                 "Password",
                                                 "Authentication",
                                                 "Common",
                                                 "Oracle maintained",
                                                 "Inherited",
                                                 "Implicit"])
-        table_widget.selectionModel().selectionChanged.connect(self.on_selectionChanged)
+        self.table_widget.selectionModel().selectionChanged.connect(self.on_selectionChanged)
         # Thêm dữ liệu vào table widget
         for role in self.roles:
-            row_position = table_widget.rowCount()
-            table_widget.insertRow(row_position)
-            table_widget.setItem(
+            row_position = self.table_widget.rowCount()
+            self.table_widget.insertRow(row_position)
+            self.table_widget.setItem(
                 row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
-            table_widget.setItem(
+            self.table_widget.setItem(
                 row_position, 1, QtWidgets.QTableWidgetItem(str(role[2])))
-            table_widget.setItem(
+            self.table_widget.setItem(
                 row_position, 2, QtWidgets.QTableWidgetItem(str(role[3])))
-            table_widget.setItem(
+            self.table_widget.setItem(
                 row_position, 3, QtWidgets.QTableWidgetItem(str(role[4])))
-            table_widget.setItem(
+            self.table_widget.setItem(
                 row_position, 4, QtWidgets.QTableWidgetItem(str(role[5])))
-            table_widget.setItem(
+            self.table_widget.setItem(
                 row_position, 5, QtWidgets.QTableWidgetItem(str(role[6])))
-            table_widget.setItem(
+            self.table_widget.setItem(
                 row_position, 6, QtWidgets.QTableWidgetItem(str(role[7])))
 
         # Thiết lập layout cho widget
@@ -65,7 +66,7 @@ class RoleView:
         self.scroll_area.setFixedHeight(300)
 
         # Đặt bảng trong khung cuộn
-        self.scroll_area.setWidget(table_widget)
+        self.scroll_area.setWidget(self.table_widget)
 
         # Đặt khung cuộn vào cửa sổ chính
         self.main_window.setCentralWidget(self.scroll_area)
@@ -244,216 +245,252 @@ class RoleView:
             # print('Row: {0}, Column: {1}'. format(ix.row(), ix.column()))
 
     def Add_Role(self):
-        result = self.role_controller.Add_Role(
-            self.txt_role_name_create.text(), self.txt_role_password_create.text())
-        print(result)
+
+        if self.txt_role_name_create.text() == '':
+            MessageBoxErr("Lỗi", "Vui lòng nhập role name")
+        else:
+            result = self.role_controller.Add_Role(
+                self.txt_role_name_create.text(), self.txt_role_password_create.text())
+            self.roles = self.role_controller.get_role_list()
+            for role in self.roles:
+                row_position = self.table_widget.rowCount()
+            self.table_widget.insertRow(row_position)
+            self.table_widget.setItem(
+                row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
+            self.table_widget.setItem(
+                row_position, 1, QtWidgets.QTableWidgetItem(str(role[2])))
+            self.table_widget.setItem(
+                row_position, 2, QtWidgets.QTableWidgetItem(str(role[3])))
+            self.table_widget.setItem(
+                row_position, 3, QtWidgets.QTableWidgetItem(str(role[4])))
+            self.table_widget.setItem(
+                row_position, 4, QtWidgets.QTableWidgetItem(str(role[5])))
+            self.table_widget.setItem(
+                row_position, 5, QtWidgets.QTableWidgetItem(str(role[6])))
+            self.table_widget.setItem(
+                row_position, 6, QtWidgets.QTableWidgetItem(str(role[7])))
+            print(result)
 
     def Recall_Role_Table(self):
-        self.main_window1 = QtWidgets.QMainWindow()
+        if self.data_Roles["Role Name"] == '':
+            MessageBoxErr("Lỗi", "Vui lòng chọn role, bảng hoặc quyền")
+        else:
+            self.main_window1 = QtWidgets.QMainWindow()
 
-        self.main_window1.setWindowTitle('Thu hồi quyền trên bảng')
+            self.main_window1.setWindowTitle('Thu hồi quyền trên bảng')
 
-        # Json data
-        self.data_Roles1 = {"Role Name": "",
-                            "Password": "",
-                            "Authentication": "",
-                            "Common": "",
-                            "Oracle maintained": "",
-                            "Inherited": "",
-                            "Implicit": ""}
+            # Json data
+            self.data_Roles1 = {"Role Name": "",
+                                "Password": "",
+                                "Authentication": "",
+                                "Common": "",
+                                "Oracle maintained": "",
+                                "Inherited": "",
+                                "Implicit": ""}
 
-        table_widget1 = QtWidgets.QTableWidget()
-        table_widget1.setColumnCount(7)  # Đặt số lượng cột cho table widget
-        table_widget1.setHorizontalHeaderLabels(["Role Name",
-                                                "Table Name",
-                                                 "Column Name",
-                                                 "Privilege",
-                                                 "Grantable",
-                                                 "Common",
-                                                 "Inherited"])
-        table_widget1.selectionModel().selectionChanged.connect(
-            self.Change_Recall_Role_Table)
+            self.table_widget1 = QtWidgets.QTableWidget()
+            self.table_widget1.setColumnCount(7)  # Đặt số lượng cột cho table widget
+            self.table_widget1.setHorizontalHeaderLabels(["Role Name",
+                                                    "Table Name",
+                                                    "Column Name",
+                                                    "Privilege",
+                                                    "Grantable",
+                                                    "Common",
+                                                    "Inherited"])
+            self.table_widget1.selectionModel().selectionChanged.connect(
+                self.Change_Recall_Role_Table)
 
-        self.roles1 = self.role_controller.get_privileged_list_of_role_table(
-            self.data_Roles["Role Name"])
+            self.roles1 = self.role_controller.get_privileged_list_of_role_table(
+                self.data_Roles["Role Name"])
+            if self.roles1 == []:
+                MessageBoxWarn("Cảnh báo", "Role không có quyền trên bảng")
+                return
 
-        for role in self.roles1:
-            row_position = table_widget1.rowCount()
-            table_widget1.insertRow(row_position)
-            table_widget1.setItem(
-                row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
-            table_widget1.setItem(
-                row_position, 1, QtWidgets.QTableWidgetItem(str(role[2])))
-            table_widget1.setItem(
-                row_position, 2, QtWidgets.QTableWidgetItem(str(role[3])))
-            table_widget1.setItem(
-                row_position, 3, QtWidgets.QTableWidgetItem(str(role[4])))
-            table_widget1.setItem(
-                row_position, 4, QtWidgets.QTableWidgetItem(str(role[5])))
-            table_widget1.setItem(
-                row_position, 5, QtWidgets.QTableWidgetItem(str(role[6])))
-            table_widget1.setItem(
-                row_position, 6, QtWidgets.QTableWidgetItem(str(role[7])))
+            for role in self.roles1:
+                row_position = self.table_widget1.rowCount()
+                self.table_widget1.insertRow(row_position)
+                self.table_widget1.setItem(
+                    row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
+                self.table_widget1.setItem(
+                    row_position, 1, QtWidgets.QTableWidgetItem(str(role[2])))
+                self.table_widget1.setItem(
+                    row_position, 2, QtWidgets.QTableWidgetItem(str(role[3])))
+                self.table_widget1.setItem(
+                    row_position, 3, QtWidgets.QTableWidgetItem(str(role[4])))
+                self.table_widget1.setItem(
+                    row_position, 4, QtWidgets.QTableWidgetItem(str(role[5])))
+                self.table_widget1.setItem(
+                    row_position, 5, QtWidgets.QTableWidgetItem(str(role[6])))
+                self.table_widget1.setItem(
+                    row_position, 6, QtWidgets.QTableWidgetItem(str(role[7])))
 
-        # Thiết lập layout cho widget
-        # Tạo khung cuộn
-        self.scroll_area1 = QtWidgets.QScrollArea()
-        self.scroll_area1.setWidgetResizable(True)
-        self.scroll_area1.setFixedWidth(400)
-        self.scroll_area1.setFixedHeight(300)
+            # Thiết lập layout cho widget
+            # Tạo khung cuộn
+            self.scroll_area1 = QtWidgets.QScrollArea()
+            self.scroll_area1.setWidgetResizable(True)
+            self.scroll_area1.setFixedWidth(400)
+            self.scroll_area1.setFixedHeight(300)
 
-        # Đặt bảng trong khung cuộn
-        self.scroll_area1.setWidget(table_widget1)
+            # Đặt bảng trong khung cuộn
+            self.scroll_area1.setWidget(self.table_widget1)
 
-        # Đặt khung cuộn vào cửa sổ chính
-        self.main_window1.setCentralWidget(self.scroll_area1)
+            # Đặt khung cuộn vào cửa sổ chính
+            self.main_window1.setCentralWidget(self.scroll_area1)
 
-        # Thiết lập kích thước cho widget
-        self.main_window1.resize(640, 480)
+            # Thiết lập kích thước cho widget
+            self.main_window1.resize(640, 480)
 
-        # Role Name
-        self.role_name_recall_table = QtWidgets.QLabel(self.main_window1)
-        self.role_name_recall_table.setText("Role Name: ")
-        self.role_name_recall_table.setStyleSheet("font-size: 14px;")
+            # Role Name
+            self.role_name_recall_table = QtWidgets.QLabel(self.main_window1)
+            self.role_name_recall_table.setText("Role Name: ")
+            self.role_name_recall_table.setStyleSheet("font-size: 14px;")
 
-        self.role_name_recall_table.move(410, 0)
+            self.role_name_recall_table.move(410, 0)
 
-        self.txt_role_recall_table = QtWidgets.QLineEdit(self.main_window1)
-        self.txt_role_recall_table.setFixedWidth(160)
-        self.txt_role_recall_table.setText("")
-        self.txt_role_recall_table.move(410, 25)
+            self.txt_role_recall_table = QtWidgets.QLineEdit(self.main_window1)
+            self.txt_role_recall_table.setFixedWidth(160)
+            self.txt_role_recall_table.setText("")
+            self.txt_role_recall_table.move(410, 25)
 
-        # Table Name
-        self.table_name_recall_table = QtWidgets.QLabel(self.main_window1)
-        self.table_name_recall_table.setText("Table Name: ")
-        self.table_name_recall_table.setStyleSheet("font-size: 14px;")
+            # Table Name
+            self.table_name_recall_table = QtWidgets.QLabel(self.main_window1)
+            self.table_name_recall_table.setText("Table Name: ")
+            self.table_name_recall_table.setStyleSheet("font-size: 14px;")
 
-        self.table_name_recall_table.move(410, 50)
+            self.table_name_recall_table.move(410, 50)
 
-        self.txt_table_recall_table = QtWidgets.QLineEdit(self.main_window1)
-        self.txt_table_recall_table.setFixedWidth(160)
-        self.txt_table_recall_table.setText("")
-        self.txt_table_recall_table.move(410, 75)
+            self.txt_table_recall_table = QtWidgets.QLineEdit(self.main_window1)
+            self.txt_table_recall_table.setFixedWidth(160)
+            self.txt_table_recall_table.setText("")
+            self.txt_table_recall_table.move(410, 75)
 
-        # Column Name
-        self.Column_name_recall_table = QtWidgets.QLabel(self.main_window1)
-        self.Column_name_recall_table.setText("Column: ")
-        self.Column_name_recall_table.setStyleSheet("font-size: 14px;")
+            # Column Name
+            self.Column_name_recall_table = QtWidgets.QLabel(self.main_window1)
+            self.Column_name_recall_table.setText("Column: ")
+            self.Column_name_recall_table.setStyleSheet("font-size: 14px;")
 
-        self.Column_name_recall_table.move(410, 100)
+            self.Column_name_recall_table.move(410, 100)
 
-        self.txt_Column_recall_table = QtWidgets.QLineEdit(self.main_window1)
-        self.txt_Column_recall_table.setFixedWidth(160)
-        self.txt_Column_recall_table.setText("")
-        self.txt_Column_recall_table.move(410, 125)
+            self.txt_Column_recall_table = QtWidgets.QLineEdit(self.main_window1)
+            self.txt_Column_recall_table.setFixedWidth(160)
+            self.txt_Column_recall_table.setText("")
+            self.txt_Column_recall_table.move(410, 125)
 
-        # Privilege
-        self.Privilege_name_recall_table = QtWidgets.QLabel(self.main_window1)
-        self.Privilege_name_recall_table.setText("Privilege: ")
-        self.Privilege_name_recall_table.setStyleSheet("font-size: 14px;")
+            # Privilege
+            self.Privilege_name_recall_table = QtWidgets.QLabel(self.main_window1)
+            self.Privilege_name_recall_table.setText("Privilege: ")
+            self.Privilege_name_recall_table.setStyleSheet("font-size: 14px;")
 
-        self.Privilege_name_recall_table.move(410, 150)
+            self.Privilege_name_recall_table.move(410, 150)
 
-        self.txt_Privilege_recall_table = QtWidgets.QLineEdit(self.main_window1)
-        self.txt_Privilege_recall_table.setFixedWidth(160)
-        self.txt_Privilege_recall_table.setText("")
-        self.txt_Privilege_recall_table.move(410, 175)
+            self.txt_Privilege_recall_table = QtWidgets.QLineEdit(
+                self.main_window1)
+            self.txt_Privilege_recall_table.setFixedWidth(160)
+            self.txt_Privilege_recall_table.setText("")
+            self.txt_Privilege_recall_table.move(410, 175)
 
-        # Buton: Thu hồi
-        self.btn_recall1 = QtWidgets.QPushButton(self.main_window1)
-        self.btn_recall1.setText("Thu hồi")
-        self.btn_recall1.setMinimumWidth(100)
-        self.btn_recall1.move(250, 360)
-        self.btn_recall1.clicked.connect(self.Handle_Recall_Role_Table)
+            # Buton: Thu hồi
+            self.btn_recall1 = QtWidgets.QPushButton(self.main_window1)
+            self.btn_recall1.setText("Thu hồi")
+            self.btn_recall1.setMinimumWidth(100)
+            self.btn_recall1.move(250, 360)
+            self.btn_recall1.clicked.connect(self.Handle_Recall_Role_Table)
 
-        self.main_window1.show()
+            self.main_window1.show()
 
     def Recall_Role_Sys(self):
-        self.main_window2 = QtWidgets.QMainWindow()
+        if self.data_Roles["Role Name"] == '':
+            MessageBoxErr("Lỗi", "Vui lòng chọn role, bảng hoặc quyền")
+        else:
+            self.main_window2 = QtWidgets.QMainWindow()
 
-        self.main_window2.setWindowTitle('Thu hồi quyền trên hệ thống')
+            self.main_window2.setWindowTitle('Thu hồi quyền trên hệ thống')
 
-        # Json data
-        self.data_Roles2 = {"Role Name": "",
-                            "Privilege": "",
-                            "Admin option": "",
-                            "Common": "",
-                            "Inherited": ""}
+            # Json data
+            self.data_Roles2 = {"Role Name": "",
+                                "Privilege": "",
+                                "Admin option": "",
+                                "Common": "",
+                                "Inherited": ""}
 
-        table_widget2 = QtWidgets.QTableWidget()
-        table_widget2.setColumnCount(5)  # Đặt số lượng cột cho table widget
-        table_widget2.setHorizontalHeaderLabels(["Role Name",
-                                                "Privilege",
-                                                 "Admin option",
-                                                 "Common",
-                                                 "Inherited"])
-        table_widget2.selectionModel().selectionChanged.connect(self.Change_Recall_Role_Sys)
+            self.table_widget2 = QtWidgets.QTableWidget()
+            self.table_widget2.setColumnCount(5)  # Đặt số lượng cột cho table widget
+            self.table_widget2.setHorizontalHeaderLabels(["Role Name",
+                                                    "Privilege",
+                                                    "Admin option",
+                                                    "Common",
+                                                    "Inherited"])
+            self.table_widget2.selectionModel().selectionChanged.connect(self.Change_Recall_Role_Sys)
 
-        self.roles2 = self.role_controller.get_privileged_list_of_role_sys(
-            self.data_Roles["Role Name"])
+            self.roles2 = self.role_controller.get_privileged_list_of_role_sys(
+                self.data_Roles["Role Name"])
+            
+            if self.roles2 == []:
+                MessageBoxWarn("Cảnh báo", "Role không có quyền trên hệ thống")
+                return
 
-        for role in self.roles2:
-            row_position = table_widget2.rowCount()
-            table_widget2.insertRow(row_position)
-            table_widget2.setItem(
-                row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
-            table_widget2.setItem(
-                row_position, 1, QtWidgets.QTableWidgetItem(str(role[1])))
-            table_widget2.setItem(
-                row_position, 2, QtWidgets.QTableWidgetItem(str(role[2])))
-            table_widget2.setItem(
-                row_position, 3, QtWidgets.QTableWidgetItem(str(role[3])))
-            table_widget2.setItem(
-                row_position, 4, QtWidgets.QTableWidgetItem(str(role[4])))
+            for role in self.roles2:
+                row_position = self.table_widget2.rowCount()
+                self.table_widget2.insertRow(row_position)
+                self.table_widget2.setItem(
+                    row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
+                self.table_widget2.setItem(
+                    row_position, 1, QtWidgets.QTableWidgetItem(str(role[1])))
+                self.table_widget2.setItem(
+                    row_position, 2, QtWidgets.QTableWidgetItem(str(role[2])))
+                self.table_widget2.setItem(
+                    row_position, 3, QtWidgets.QTableWidgetItem(str(role[3])))
+                self.table_widget2.setItem(
+                    row_position, 4, QtWidgets.QTableWidgetItem(str(role[4])))
 
-        # Thiết lập layout cho widget
-        # Tạo khung cuộn
-        self.scroll_area2 = QtWidgets.QScrollArea()
-        self.scroll_area2.setWidgetResizable(True)
-        self.scroll_area2.setFixedWidth(400)
-        self.scroll_area2.setFixedHeight(300)
+            # Thiết lập layout cho widget
+            # Tạo khung cuộn
+            self.scroll_area2 = QtWidgets.QScrollArea()
+            self.scroll_area2.setWidgetResizable(True)
+            self.scroll_area2.setFixedWidth(400)
+            self.scroll_area2.setFixedHeight(300)
 
-        # Đặt bảng trong khung cuộn
-        self.scroll_area2.setWidget(table_widget2)
+            # Đặt bảng trong khung cuộn
+            self.scroll_area2.setWidget(self.table_widget2)
 
-        # Đặt khung cuộn vào cửa sổ chính
-        self.main_window2.setCentralWidget(self.scroll_area2)
+            # Đặt khung cuộn vào cửa sổ chính
+            self.main_window2.setCentralWidget(self.scroll_area2)
 
-        # Thiết lập kích thước cho widget
-        self.main_window2.resize(640, 480)
+            # Thiết lập kích thước cho widget
+            self.main_window2.resize(640, 480)
 
-        # Role Name
-        self.role_name_recall_sys = QtWidgets.QLabel(self.main_window2)
-        self.role_name_recall_sys.setText("Role Name: ")
-        self.role_name_recall_sys.setStyleSheet("font-size: 14px;")
+            # Role Name
+            self.role_name_recall_sys = QtWidgets.QLabel(self.main_window2)
+            self.role_name_recall_sys.setText("Role Name: ")
+            self.role_name_recall_sys.setStyleSheet("font-size: 14px;")
 
-        self.role_name_recall_sys.move(410, 0)
+            self.role_name_recall_sys.move(410, 0)
 
-        self.txt_role_recall_sys = QtWidgets.QLineEdit(self.main_window2)
-        self.txt_role_recall_sys.setFixedWidth(160)
-        self.txt_role_recall_sys.setText("")
-        self.txt_role_recall_sys.move(410, 25)
+            self.txt_role_recall_sys = QtWidgets.QLineEdit(self.main_window2)
+            self.txt_role_recall_sys.setFixedWidth(160)
+            self.txt_role_recall_sys.setText("")
+            self.txt_role_recall_sys.move(410, 25)
 
-        # Privilege
-        self.Privilege_name_recall_sys = QtWidgets.QLabel(self.main_window2)
-        self.Privilege_name_recall_sys.setText("Privilege: ")
-        self.Privilege_name_recall_sys.setStyleSheet("font-size: 14px;")
+            # Privilege
+            self.Privilege_name_recall_sys = QtWidgets.QLabel(self.main_window2)
+            self.Privilege_name_recall_sys.setText("Privilege: ")
+            self.Privilege_name_recall_sys.setStyleSheet("font-size: 14px;")
 
-        self.Privilege_name_recall_sys.move(410, 50)
+            self.Privilege_name_recall_sys.move(410, 50)
 
-        self.txt_Privilege_recall_sys = QtWidgets.QLineEdit(self.main_window2)
-        self.txt_Privilege_recall_sys.setFixedWidth(160)
-        self.txt_Privilege_recall_sys.setText("")
-        self.txt_Privilege_recall_sys.move(410, 75)
+            self.txt_Privilege_recall_sys = QtWidgets.QLineEdit(self.main_window2)
+            self.txt_Privilege_recall_sys.setFixedWidth(160)
+            self.txt_Privilege_recall_sys.setText("")
+            self.txt_Privilege_recall_sys.move(410, 75)
 
-        # Button: Thu hồi
-        self.btn_recall2 = QtWidgets.QPushButton(self.main_window2)
-        self.btn_recall2.setText("Thu hồi")
-        self.btn_recall2.setMinimumWidth(100)
-        self.btn_recall2.move(250, 360)
-        self.btn_recall2.clicked.connect(self.Handle_Recall_Role_Sys)
+            # Button: Thu hồi
+            self.btn_recall2 = QtWidgets.QPushButton(self.main_window2)
+            self.btn_recall2.setText("Thu hồi")
+            self.btn_recall2.setMinimumWidth(100)
+            self.btn_recall2.move(250, 360)
+            self.btn_recall2.clicked.connect(self.Handle_Recall_Role_Sys)
 
-        self.main_window2.show()
+            self.main_window2.show()
 
     def Change_Recall_Role_Table(self, selected, deselected):
         index = -1
@@ -468,8 +505,10 @@ class RoleView:
                                 "Inherited": self.roles1[index][7]}
             self.txt_role_recall_table.setText(self.data_Roles1["Role Name"])
             self.txt_table_recall_table.setText(self.data_Roles1["Table Name"])
-            self.txt_Column_recall_table.setText(self.data_Roles1["Column Name"])
-            self.txt_Privilege_recall_table.setText(self.data_Roles1["Privilege"])
+            self.txt_Column_recall_table.setText(
+                self.data_Roles1["Column Name"])
+            self.txt_Privilege_recall_table.setText(
+                self.data_Roles1["Privilege"])
 
     def Change_Recall_Role_Sys(self, selected, deselected):
         index = -1
@@ -482,17 +521,79 @@ class RoleView:
                                 "Inherited": self.roles2[index][4]}
         self.txt_role_recall_sys.setText(self.data_Roles2["Role Name"])
         self.txt_Privilege_recall_sys.setText(self.data_Roles2["Privilege"])
-    
+
     def Handle_Recall_Role_Table(self):
-        result = self.role_controller.Recall_Role_Table(
-            self.data_Roles1["Role Name"], self.data_Roles1["Table Name"], self.data_Roles1["Privilege"])
-        return result
+        if self.data_Roles1["Role Name"] == '' or self.data_Roles1["Table Name"] == '' or self.data_Roles1["Privilege"]:
+            MessageBoxErr("Lỗi", "Vui lòng chọn role, bảng, hoặc quyền")
+        else:
+            result = self.role_controller.Recall_Role_Table(
+                self.data_Roles1["Role Name"], self.data_Roles1["Table Name"], self.data_Roles1["Privilege"])
+            
+            self.roles1 = self.role_controller.get_privileged_list_of_role_table(
+                self.data_Roles["Role Name"])
+            if self.roles1 == []:
+                MessageBoxWarn("Cảnh báo", "Role không có quyền trên bảng")
+                return
+
+            for role in self.roles1:
+                row_position = self.table_widget1.rowCount()
+                self.table_widget1.insertRow(row_position)
+                self.table_widget1.setItem(
+                    row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
+                self.table_widget1.setItem(
+                    row_position, 1, QtWidgets.QTableWidgetItem(str(role[2])))
+                self.table_widget1.setItem(
+                    row_position, 2, QtWidgets.QTableWidgetItem(str(role[3])))
+                self.table_widget1.setItem(
+                    row_position, 3, QtWidgets.QTableWidgetItem(str(role[4])))
+                self.table_widget1.setItem(
+                    row_position, 4, QtWidgets.QTableWidgetItem(str(role[5])))
+                self.table_widget1.setItem(
+                    row_position, 5, QtWidgets.QTableWidgetItem(str(role[6])))
+                self.table_widget1.setItem(
+                    row_position, 6, QtWidgets.QTableWidgetItem(str(role[7])))
+            return result
 
     def Handle_Recall_Role_Sys(self):
-        result = self.role_controller.Recall_Role_Sys(
-            self.data_Roles2["Role Name"], self.data_Roles2["Privilege"])
-        return result
+        if self.data_Roles2["Role Name"] == '' or self.data_Roles2["Privilege"] == '':
+            MessageBoxErr("Lỗi", "Vui lòng chọn role hoặc quyền")
+        else:
+            result = self.role_controller.Recall_Role_Sys(
+                self.data_Roles2["Role Name"], self.data_Roles2["Privilege"])
+            
+            self.roles2 = self.role_controller.get_privileged_list_of_role_sys(
+                self.data_Roles["Role Name"])
+            
+            if self.roles2 == []:
+                MessageBoxWarn("Cảnh báo", "Role không có quyền trên hệ thống")
+                return
+
+            for role in self.roles2:
+                row_position = self.table_widget2.rowCount()
+                self.table_widget2.insertRow(row_position)
+                self.table_widget2.setItem(
+                    row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
+                self.table_widget2.setItem(
+                    row_position, 1, QtWidgets.QTableWidgetItem(str(role[1])))
+                self.table_widget2.setItem(
+                    row_position, 2, QtWidgets.QTableWidgetItem(str(role[2])))
+                self.table_widget2.setItem(
+                    row_position, 3, QtWidgets.QTableWidgetItem(str(role[3])))
+                self.table_widget2.setItem(
+                    row_position, 4, QtWidgets.QTableWidgetItem(str(role[4])))
+            return result
 
     def Delete_Role(self):
-        result = self.role_controller.Delete_Role(self.data_Roles["Role Name"])
-        print(result)
+        if self.data_Roles["Role Name"] == '':
+            MessageBoxErr("Lỗi", "Vui lòng chọn role")
+        else:
+            result = self.role_controller.Delete_Role(
+                self.data_Roles["Role Name"])
+            print(result)
+
+
+def MessageBoxErr(title, message):
+    messagebox.showerror(title, message)
+
+def MessageBoxWarn(title, message):
+    messagebox.showwarning(title, message)
