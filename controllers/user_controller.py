@@ -1,11 +1,6 @@
 from utils.database import connection2
 from utils.database import connection3
 from utils.database import connection1
-class UserController:
-    def get_user_list(self):
-        result = connection2(
-            'NhanVienQT', 'Admin123', 'SELECT * FROM ROLE_TAB_PRIVS')
-        return result
 
 class User_Controller:
     def display_user_list(self):

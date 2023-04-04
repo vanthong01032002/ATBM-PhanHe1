@@ -7,9 +7,7 @@ from controllers.role_controller import RoleController
 
 
 class RoleView:
-    def display_role_list(self):
-        app = QtWidgets.QApplication(sys.argv)
-
+    def __init__(self):
         self.role_controller = RoleController()
         self.roles = self.role_controller.get_role_list()
 
@@ -221,8 +219,6 @@ class RoleView:
 
         # Hiển thị widget
         self.main_window.show()
-        # Chạy vòng lặp ứng dụng
-        sys.exit(app.exec_())
 
     def on_selectionChanged(self, selected, deselected):
         for ix in selected.indexes():
@@ -245,7 +241,6 @@ class RoleView:
             # print('Row: {0}, Column: {1}'. format(ix.row(), ix.column()))
 
     def Add_Role(self):
-
         if self.txt_role_name_create.text() == '':
             MessageBoxErr("Lỗi", "Vui lòng nhập role name")
         else:

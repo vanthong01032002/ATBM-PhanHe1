@@ -4,7 +4,7 @@ import cx_Oracle
 
 def connection1(username, password, queryString):
     try:
-        con = cx_Oracle.connect(username, password, 'localhost:1521/XEPDB1')
+        con = cx_Oracle.connect(username, password, 'localhost:1521/ORCLPDB')
 
     except cx_Oracle.DatabaseError as er:
         print('There is an error in the Oracle database:', er)

@@ -1,7 +1,7 @@
 import sys
 #from PySide2 import QtWidgets
 from PyQt5 import QtCore, QtWidgets
-from controllers.user_controller import UserController
+# from controllers.user_controller import UserController
 from controllers.user_controller import User_Controller
 
 class UserView:
