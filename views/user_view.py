@@ -1,37 +1,35 @@
 import sys
-#from PySide2 import QtWidgets
 from PyQt5 import QtCore, QtWidgets
-# from controllers.user_controller import UserController
 from controllers.user_controller import User_Controller
-    
+import messagebox
 class UserList:
     def __init__(self):
         self.user_controller = User_Controller()
         self.user_list = self.user_controller.display_user_list()
         self.main_window = QtWidgets.QMainWindow()
-        self.main_window.setWindowTitle('Danh sach nguoi dung')
+        self.main_window.setWindowTitle('Danh sách User')
 
         self.data_Users = {"ID": "",
                            "User Name": "",
                            "Date Created": ""}
 
-        table_widget = QtWidgets.QTableWidget()
-        table_widget.setColumnCount(3)
-        table_widget.setHorizontalHeaderLabels(['ID', 'User Name', 'Date created'])
+        self.table_widget = QtWidgets.QTableWidget()
+        self.table_widget.setColumnCount(3)
+        self.table_widget.setHorizontalHeaderLabels(['ID', 'User Name', 'Date created'])
 
-        table_widget.selectionModel().selectionChanged.connect(self.on_sel)
+        self.table_widget.selectionModel().selectionChanged.connect(self.on_sel)
         for user in self.user_list:
-            row_position = table_widget.rowCount()
-            table_widget.insertRow(row_position)
-            table_widget.setItem(row_position, 0, QtWidgets.QTableWidgetItem(str(user[0])))
-            table_widget.setItem(row_position, 1, QtWidgets.QTableWidgetItem(str(user[1])))
-            table_widget.setItem(row_position, 2, QtWidgets.QTableWidgetItem(str(user[2])))
+            row_position = self.table_widget.rowCount()
+            self.table_widget.insertRow(row_position)
+            self.table_widget.setItem(row_position, 0, QtWidgets.QTableWidgetItem(str(user[0])))
+            self.table_widget.setItem(row_position, 1, QtWidgets.QTableWidgetItem(str(user[1])))
+            self.table_widget.setItem(row_position, 2, QtWidgets.QTableWidgetItem(str(user[2])))
 
         self.scroll_area = QtWidgets.QScrollArea()
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setFixedWidth(420)
         self.scroll_area.setFixedHeight(450)
-        self.scroll_area.setWidget(table_widget)
+        self.scroll_area.setWidget(self.table_widget)
         self.main_window.setCentralWidget(self.scroll_area)
 
         self.main_window.resize(640,480)
@@ -58,41 +56,30 @@ class UserList:
         self.btn_delete = QtWidgets.QPushButton(self.main_window)
         self.btn_delete.setText("ADD USER")
         self.btn_delete.setMinimumWidth(100)
-        self.btn_delete.move(470, 160)
+        self.btn_delete.move(470, 110)
         self.btn_delete.clicked.connect(self.Create_User_View)
 
         #Revoke Role Button
         self.btn_rRole = QtWidgets.QPushButton(self.main_window)
         self.btn_rRole.setText("Revoke Role")
         self.btn_rRole.setMinimumWidth(100)
-        self.btn_rRole.move(470, 200)
+        self.btn_rRole.move(470, 150)
         self.btn_rRole.clicked.connect(self.Revoke_Role_View)
 
         #Revoke Table_Privs Button
         self.btn_rTab = QtWidgets.QPushButton(self.main_window)
         self.btn_rTab.setText("Revoke Table Privs")
         self.btn_rTab.setMinimumWidth(150)
-        self.btn_rTab.move(470, 240)
+        self.btn_rTab.move(470, 190)
         self.btn_rTab.clicked.connect(self.Revoke_TabPrivs_View)
         
         #Revoke Privs Button
         self.btn_rPri = QtWidgets.QPushButton(self.main_window)
         self.btn_rPri.setText("Revoke System Privs")
         self.btn_rPri.setMinimumWidth(150)
-        self.btn_rPri.move(470, 280)
+        self.btn_rPri.move(470, 230)
         self.btn_rPri.clicked.connect(self.Revoke_Privs_View)
 
-        #Change Password
-        self.btn_change = QtWidgets.QPushButton(self.main_window)
-        self.btn_change.setText("CHANGE")
-        self.btn_change.setMinimumWidth(30)
-        self.btn_change.move(430, 115)
-        self.btn_change.clicked.connect(self.New_password)
-
-        self.txt_change = QtWidgets.QLineEdit(self.main_window)
-        self.txt_change.setFixedWidth(100)
-        self.txt_change.setText("New password")
-        self.txt_change.move(510, 115)
         # Hiển thị widget
         self.main_window.show()
 
@@ -105,7 +92,22 @@ class UserList:
             self.txt_role.setText(self.data_Users["User Name"])
 
     def Drop_User(self):
-        self.user_controller.Drop_User(self.data_Users["User Name"])
+        if self.data_Users["User Name"] == '':
+            MessageBoxErr("Lỗi", "Vui lòng chọn tên user")
+        else:
+            self.user_controller.Drop_User(self.data_Users["User Name"])
+            self.update_user_list()
+
+    def update_user_list(self):
+        self.user_list = self.user_controller.display_user_list()
+        if self.table_widget is not None:
+            self.table_widget.clearContents()
+            self.table_widget.setRowCount(0)
+            self.table_widget.setRowCount(len(self.user_list))
+            for row, user in enumerate(self.user_list):
+                self.table_widget.setItem(row, 0, QtWidgets.QTableWidgetItem(str(user[0])))
+                self.table_widget.setItem(row, 1, QtWidgets.QTableWidgetItem(str(user[1])))
+                self.table_widget.setItem(row, 2, QtWidgets.QTableWidgetItem(str(user[2])))
 
     def New_password(self):
         self.user_controller.New_Password(self.data_Users["User Name"], self.txt_change.text())
@@ -146,7 +148,12 @@ class UserList:
         self.sub_window.show()
 
     def Create_User(self):
-        self.user_controller.Create_User(self.txt_user_name.text(), self.txt_password.text())
+        if self.txt_user_name.text() == '':
+            MessageBoxErr("Lỗi", "Vui lòng nhập tên user")
+        else:
+            self.user_controller.Create_User(self.txt_user_name.text(), self.txt_password.text())
+            self.update_user_list()
+        
 
 #Revoke Role
     def Revoke_Role_View(self):
@@ -156,19 +163,19 @@ class UserList:
         self.user_controller1 = User_Controller()
         self.role_list = self.user_controller1.display_role_of_user(self.txt_role.text())
         self.data_Roles = {"Role": ""}
-        table_widget = QtWidgets.QTableWidget()
-        table_widget.setColumnCount(6)  # Đặt số lượng cột cho table widget
-        table_widget.setHorizontalHeaderLabels(['Role', 'Admin Option', 'Delegate_Option', 'Default_Role', 'Common', 'Inherited'])
-        table_widget.selectionModel().selectionChanged.connect(self.on_sel1)
+        self.table_widget = QtWidgets.QTableWidget()
+        self.table_widget.setColumnCount(6)  # Đặt số lượng cột cho table widget
+        self.table_widget.setHorizontalHeaderLabels(['Role', 'Admin Option', 'Delegate_Option', 'Default_Role', 'Common', 'Inherited'])
+        self.table_widget.selectionModel().selectionChanged.connect(self.on_sel1)
         for role in self.role_list:
-            row_position = table_widget.rowCount()
-            table_widget.insertRow(row_position)
-            table_widget.setItem(row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
-            table_widget.setItem(row_position, 1, QtWidgets.QTableWidgetItem(str(role[1])))
-            table_widget.setItem(row_position, 2, QtWidgets.QTableWidgetItem(str(role[2])))
-            table_widget.setItem(row_position, 3, QtWidgets.QTableWidgetItem(str(role[3])))
-            table_widget.setItem(row_position, 4, QtWidgets.QTableWidgetItem(str(role[4])))
-            table_widget.setItem(row_position, 5, QtWidgets.QTableWidgetItem(str(role[5])))
+            row_position = self.table_widget.rowCount()
+            self.table_widget.insertRow(row_position)
+            self.table_widget.setItem(row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
+            self.table_widget.setItem(row_position, 1, QtWidgets.QTableWidgetItem(str(role[1])))
+            self.table_widget.setItem(row_position, 2, QtWidgets.QTableWidgetItem(str(role[2])))
+            self.table_widget.setItem(row_position, 3, QtWidgets.QTableWidgetItem(str(role[3])))
+            self.table_widget.setItem(row_position, 4, QtWidgets.QTableWidgetItem(str(role[4])))
+            self.table_widget.setItem(row_position, 5, QtWidgets.QTableWidgetItem(str(role[5])))
         
         # Thiết lập layout cho widget
         # Tạo khung cuộn
@@ -178,7 +185,7 @@ class UserList:
         self.scroll_area.setFixedHeight(450)
 
         # Đặt bảng trong khung cuộn
-        self.scroll_area.setWidget(table_widget)
+        self.scroll_area.setWidget(self.table_widget)
 
         # Đặt khung cuộn vào cửa sổ chính
         self.sub_window.setCentralWidget(self.scroll_area)
@@ -207,14 +214,31 @@ class UserList:
         self.sub_window.show()
 
     def Revoke_Role(self):
-        print(self.txt_role.text())
-        self.user_controller1.Revoke_Role_From_User(self.txt_role1.text(), self.txt_role.text())
+        if self.txt_role1.text() == '':
+            MessageBoxErr("Lỗi", "Vui lòng chọn role")
+        else:
+            self.user_controller1.Revoke_Role_From_User(self.txt_role1.text(), self.txt_role.text())
+            self.update_role_list()
+    
     def on_sel1(self, selected, deselected):
         for ix in selected.indexes():
             index = int(format(ix.row()))
             self.data_Roles = {"Role": self.role_list[index][0]}
             self.txt_role1.setText(self.data_Roles["Role"])
-        
+    
+    def update_role_list(self):
+        self.role_list = self.user_controller1.display_role_of_user(self.txt_role.text())
+        if self.table_widget is not None:
+            self.table_widget.clearContents()
+            self.table_widget.setRowCount(0)
+            self.table_widget.setRowCount(len(self.user_list))
+            for row, role in enumerate(self.role_list):
+                self.table_widget.setItem(row, 0, QtWidgets.QTableWidgetItem(str(role[0])))
+                self.table_widget.setItem(row, 1, QtWidgets.QTableWidgetItem(str(role[1])))
+                self.table_widget.setItem(row, 2, QtWidgets.QTableWidgetItem(str(role[2])))  
+                self.table_widget.setItem(row, 3, QtWidgets.QTableWidgetItem(str(role[3])))
+                self.table_widget.setItem(row, 4, QtWidgets.QTableWidgetItem(str(role[4])))
+                self.table_widget.setItem(row, 5, QtWidgets.QTableWidgetItem(str(role[5])))  
 #Revoke Tab Privs
     def Revoke_TabPrivs_View(self):
         self.sub_window = QtWidgets.QMainWindow()
@@ -223,18 +247,18 @@ class UserList:
         self.tabprivs_list = self.user_controller2.display_tabprivs_of_user(self.txt_role.text())
         self.data_TabPrivs = {"Table_Name": "",
                            "Privilege": ""}
-        table_widget = QtWidgets.QTableWidget()
-        table_widget.setColumnCount(5)  # Đặt số lượng cột cho table widget
-        table_widget.setHorizontalHeaderLabels(['Owner', 'Table_Name', 'Grantor', 'Privilege', 'Grantable'])
-        table_widget.selectionModel().selectionChanged.connect(self.on_sel2)
+        self.table_widget = QtWidgets.QTableWidget()
+        self.table_widget.setColumnCount(5)  # Đặt số lượng cột cho table widget
+        self.table_widget.setHorizontalHeaderLabels(['Owner', 'Table_Name', 'Grantor', 'Privilege', 'Grantable'])
+        self.table_widget.selectionModel().selectionChanged.connect(self.on_sel2)
         for priv in self.tabprivs_list:
-            row_position = table_widget.rowCount()
-            table_widget.insertRow(row_position)
-            table_widget.setItem(row_position, 0, QtWidgets.QTableWidgetItem(str(priv[0])))
-            table_widget.setItem(row_position, 1, QtWidgets.QTableWidgetItem(str(priv[1])))
-            table_widget.setItem(row_position, 2, QtWidgets.QTableWidgetItem(str(priv[2])))
-            table_widget.setItem(row_position, 3, QtWidgets.QTableWidgetItem(str(priv[3])))
-            table_widget.setItem(row_position, 4, QtWidgets.QTableWidgetItem(str(priv[4])))
+            row_position = self.table_widget.rowCount()
+            self.table_widget.insertRow(row_position)
+            self.table_widget.setItem(row_position, 0, QtWidgets.QTableWidgetItem(str(priv[0])))
+            self.table_widget.setItem(row_position, 1, QtWidgets.QTableWidgetItem(str(priv[1])))
+            self.table_widget.setItem(row_position, 2, QtWidgets.QTableWidgetItem(str(priv[2])))
+            self.table_widget.setItem(row_position, 3, QtWidgets.QTableWidgetItem(str(priv[3])))
+            self.table_widget.setItem(row_position, 4, QtWidgets.QTableWidgetItem(str(priv[4])))
         
         # Thiết lập layout cho widget
         # Tạo khung cuộn
@@ -244,7 +268,7 @@ class UserList:
         self.scroll_area.setFixedHeight(450)
 
         # Đặt bảng trong khung cuộn
-        self.scroll_area.setWidget(table_widget)
+        self.scroll_area.setWidget(self.table_widget)
 
         # Đặt khung cuộn vào cửa sổ chính
         self.sub_window.setCentralWidget(self.scroll_area)
@@ -284,7 +308,12 @@ class UserList:
         self.sub_window.show()
 
     def Revoke_TabPrivs(self):
-        self.user_controller2.Revoke_TabPrivs_From_User(self.txt_tabpriv.text(), self.txt_tab.text(), self.txt_role.text())
+        if self.txt_tabpriv.text() == '' or self.txt_tab.text() == '':
+            MessageBoxErr("Lỗi", "Vui lòng không nhập thiếu thông tin")
+        else:
+            self.user_controller2.Revoke_TabPrivs_From_User(self.txt_tabpriv.text(), self.txt_tab.text(), self.txt_role.text())
+            self.update_tabprivs_list()
+
     def on_sel2(self, selected, deselected):
         for ix in selected.indexes():
             index = int(format(ix.row()))
@@ -293,6 +322,18 @@ class UserList:
             self.txt_tab.setText(self.data_TabPrivs["Table_Name"])
             self.txt_tabpriv.setText(self.data_TabPrivs["Privilege"])
         
+    def update_tabprivs_list(self):
+        self.tabprivs_list = self.user_controller2.display_tabprivs_of_user(self.txt_role.text())
+        if self.table_widget is not None:
+            self.table_widget.clearContents()
+            self.table_widget.setRowCount(0)
+            self.table_widget.setRowCount(len(self.tabprivs_list))
+            for row, priv in enumerate(self.tabprivs_list):
+                self.table_widget.setItem(row, 0, QtWidgets.QTableWidgetItem(str(priv[0])))
+                self.table_widget.setItem(row, 1, QtWidgets.QTableWidgetItem(str(priv[1])))
+                self.table_widget.setItem(row, 2, QtWidgets.QTableWidgetItem(str(priv[2])))  
+                self.table_widget.setItem(row, 3, QtWidgets.QTableWidgetItem(str(priv[3])))
+                self.table_widget.setItem(row, 4, QtWidgets.QTableWidgetItem(str(priv[4]))) 
 #Revoke System Privs
     def Revoke_Privs_View(self):
         self.sub_window = QtWidgets.QMainWindow()
@@ -300,17 +341,17 @@ class UserList:
         self.user_controller3 = User_Controller()
         self.privs_list = self.user_controller3.display_privs_of_user(self.txt_role.text())
         self.data_Privs = {"Privilege": ""}
-        table_widget = QtWidgets.QTableWidget()
-        table_widget.setColumnCount(4)  # Đặt số lượng cột cho table widget
-        table_widget.setHorizontalHeaderLabels(['Privilege', 'Admin_Option', 'Common', 'Inherited'])
-        table_widget.selectionModel().selectionChanged.connect(self.on_sel3)
+        self.table_widget = QtWidgets.QTableWidget()
+        self.table_widget.setColumnCount(4)  # Đặt số lượng cột cho table widget
+        self.table_widget.setHorizontalHeaderLabels(['Privilege', 'Admin_Option', 'Common', 'Inherited'])
+        self.table_widget.selectionModel().selectionChanged.connect(self.on_sel3)
         for priv in self.privs_list:
-            row_position = table_widget.rowCount()
-            table_widget.insertRow(row_position)
-            table_widget.setItem(row_position, 0, QtWidgets.QTableWidgetItem(str(priv[0])))
-            table_widget.setItem(row_position, 1, QtWidgets.QTableWidgetItem(str(priv[1])))
-            table_widget.setItem(row_position, 2, QtWidgets.QTableWidgetItem(str(priv[2])))
-            table_widget.setItem(row_position, 3, QtWidgets.QTableWidgetItem(str(priv[3])))
+            row_position = self.table_widget.rowCount()
+            self.table_widget.insertRow(row_position)
+            self.table_widget.setItem(row_position, 0, QtWidgets.QTableWidgetItem(str(priv[0])))
+            self.table_widget.setItem(row_position, 1, QtWidgets.QTableWidgetItem(str(priv[1])))
+            self.table_widget.setItem(row_position, 2, QtWidgets.QTableWidgetItem(str(priv[2])))
+            self.table_widget.setItem(row_position, 3, QtWidgets.QTableWidgetItem(str(priv[3])))
         
         # Thiết lập layout cho widget
         # Tạo khung cuộn
@@ -320,7 +361,7 @@ class UserList:
         self.scroll_area.setFixedHeight(450)
 
         # Đặt bảng trong khung cuộn
-        self.scroll_area.setWidget(table_widget)
+        self.scroll_area.setWidget(self.table_widget)
 
         # Đặt khung cuộn vào cửa sổ chính
         self.sub_window.setCentralWidget(self.scroll_area)
@@ -349,9 +390,34 @@ class UserList:
         self.sub_window.show()
 
     def Revoke_Privs(self):
-        self.user_controller3.Revoke_Privs_From_User(self.txt_pri.text(), self.txt_role.text())
+        if self.txt_pri.text() == '':
+           MessageBoxErr("Lỗi", "Vui lòng nhập tên quyền")
+        else:
+            self.user_controller3.Revoke_Privs_From_User(self.txt_pri.text(), self.txt_role.text())
+            self.update_priv_list()
+        
+    
     def on_sel3(self, selected, deselected):
         for ix in selected.indexes():
             index = int(format(ix.row()))
             self.data_Privs = {"Privilege": self.privs_list[index][0]}
             self.txt_pri.setText(self.data_Privs["Privilege"])
+
+    def update_priv_list(self):
+        self.privs_list = self.user_controller3.display_privs_of_user(self.txt_role.text())
+        if self.table_widget is not None:
+            self.table_widget.clearContents()
+            self.table_widget.setRowCount(0)
+            self.table_widget.setRowCount(len(self.privs_list))
+            for row, priv in enumerate(self.privs_list):
+                self.table_widget.setItem(row, 0, QtWidgets.QTableWidgetItem(str(priv[0])))
+                self.table_widget.setItem(row, 1, QtWidgets.QTableWidgetItem(str(priv[1])))
+                self.table_widget.setItem(row, 2, QtWidgets.QTableWidgetItem(str(priv[2])))  
+                self.table_widget.setItem(row, 3, QtWidgets.QTableWidgetItem(str(priv[3])))
+
+
+def MessageBoxErr(title, message):
+    messagebox.showerror(title, message)
+
+def MessageBoxWarn(title, message):
+    messagebox.showwarning(title, message)
