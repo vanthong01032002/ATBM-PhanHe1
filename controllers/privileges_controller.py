@@ -1,17 +1,9 @@
 from utils.database import execute_query
-from controllers.login_controller import LoginController
+import utils.auth as login
 
 class PrivilegesController:
-    def __init__(self):
-        self.login_controller = LoginController()
-        self.username_text = None
-        self.password_text = None
-        
 
     def get_user_list(self, search_text=None):
-
-        self.username_text, self.password_text = self.login_controller.get_username_and_password()
-
 
         sql = "SELECT GRANTEE, TABLE_NAME, PRIVILEGE FROM dba_tab_privs"
         if search_text:
@@ -19,6 +11,6 @@ class PrivilegesController:
         else:
             sql = "SELECT GRANTEE, TABLE_NAME, PRIVILEGE FROM dba_tab_privs"
             
-        result = execute_query(self.username_text, self.password_text, sql)
+        result = execute_query(login.myList[0], login.myList[1], sql)
             
         return result

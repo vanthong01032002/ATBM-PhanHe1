@@ -4,7 +4,7 @@ import cx_Oracle
 
 def connection1(username, password, queryString):
     try:
-        con = cx_Oracle.connect(username, password, 'localhost:1521/ORCLPDB')
+        con = cx_Oracle.connect(username, password, 'localhost:1521/XEPDB1')
 
     except cx_Oracle.DatabaseError as er:
         print('There is an error in the Oracle database:', er)
@@ -45,11 +45,11 @@ def initialize_oracle_client(lib_dir):
             sys.exit(1)
 
 def connection2(username, password):
-    lib_dir = r"C:\instantclient-basic-windows.x64-21.9.0.0.0dbru\instantclient_21_9"
+    lib_dir = r"D:\Download\instantclient-basic-windows.x64-21.9.0.0.0dbru\instantclient_21_9"
     initialize_oracle_client(lib_dir)
     
     try:
-        con = cx_Oracle.connect(username, password, 'localhost:1521/xe')
+        con = cx_Oracle.connect(username, password, 'localhost:1521/XEPDB1')
         return con.cursor()
 
     except cx_Oracle.DatabaseError as er:

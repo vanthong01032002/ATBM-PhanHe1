@@ -1,6 +1,7 @@
 import sys       
 from PySide2 import QtWidgets
 from PySide2.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QMainWindow, QMessageBox, QDialog
+import messagebox
 from PySide2 import QtGui, QtCore
 from controllers.login_controller import LoginController
 from views.menu_views import MainWindown
@@ -8,6 +9,8 @@ class LoginWindow:
     def __init__(self):
         self.login_controllers = LoginController()
         self.login_window = QtWidgets.QMainWindow()
+        global myList
+        myList = []
 
          # Thiết lập tiêu đề cho cửa sổ
         self.login_window.setWindowTitle('login')
@@ -61,10 +64,19 @@ class LoginWindow:
         self.password_text = self.password_input.text()
         result =self.login_controllers.login_connect(self.user_name_text, self.password_text)
         if result:
+            MessageBoxInfo("Dang nhap", "Thanh cong")
             self.login_window.close()
             # Đăng nhập thành công, chuyển qua trang menu
             Main_Windown = MainWindown()
             MainWindown.show()
+
+def MessageBoxInfo(title, message):
+    messagebox.showinfo(title, message)
+        
+
+def MessageBoxErr(title, message):
+    messagebox.showerror(title, message)
+
             
 
 
