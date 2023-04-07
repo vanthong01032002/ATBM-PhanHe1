@@ -1,5 +1,4 @@
 import sys
-import messagebox
 # from PySide2 import QtWidgets
 from PyQt5 import QtCore, QtWidgets
 
@@ -15,7 +14,7 @@ class RoleView:
         self.main_window = QtWidgets.QMainWindow()
 
         # Thiết lập tiêu đề cho cửa sổ
-        self.main_window.setWindowTitle('Danh sách role:')
+        self.main_window.setWindowTitle('Danh sách role')
 
         # Json data
         self.data_Roles = {"Role Name": "",

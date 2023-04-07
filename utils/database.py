@@ -32,17 +32,49 @@ def connection1(username, password, queryString):
                 cur.close()
             return False
 
+oracle_client_initialized = False
 
-def connection2(username, password, queryString):
+def initialize_oracle_client(lib_dir):
+    global oracle_client_initialized
+    if not oracle_client_initialized:
+        try:
+            cx_Oracle.init_oracle_client(lib_dir=lib_dir)
+            oracle_client_initialized = True
+        except Exception as err:
+            print("Error initializing Oracle Client:", err)
+            sys.exit(1)
+
+def connection2(username, password):
     lib_dir = r"C:\instantclient-basic-windows.x64-21.9.0.0.0dbru\instantclient_21_9"
+    initialize_oracle_client(lib_dir)
+    
     try:
-        cx_Oracle.init_oracle_client(lib_dir=lib_dir)
-    except Exception as err:
-        print("Error connecting: cx_Oracle.init_oracle_client()")
-        print(err)
-        sys.exit(1)
-    connection = cx_Oracle.connect('C##ADMIN/1234@localhost:1521/xe')
+        con = cx_Oracle.connect(username, password, 'localhost:1521/xe')
+        return con.cursor()
 
+    except cx_Oracle.DatabaseError as er:
+        print('There is an error in the Oracle database:', er)
+        return False
+
+    except Exception as er:
+        print('Error:'+str(er))
+        return False
+
+
+def execute_query(username, password, query_string):
+    cursor = connection2(username, password)
+    if cursor:
+        try:
+            cursor.execute(query_string)
+            result = cursor.fetchall()
+            cursor.close()
+            return result
+        except cx_Oracle.DatabaseError as er:
+            print('There is an error in the Oracle database:', er)
+            cursor.close()
+            return False
+    else:
+        return False
 
 def connection3(username, password, queryString):
     lib_dir = r"C:\oclient\instantclient-basic-windows.x64-21.9.0.0.0dbru\instantclient_21_9"
