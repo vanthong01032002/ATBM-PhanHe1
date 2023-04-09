@@ -228,7 +228,8 @@ class TableView:
             # Đặt số lượng cột cho table widget
             self.table_widget1.setColumnCount(1)
             self.table_widget1.setHorizontalHeaderLabels(['COLUMN NAME'])
-            self.table_widget1.selectionModel().selectionChanged.connect(self.on_selectionChanged_column)
+            self.table_widget1.selectionModel().selectionChanged.connect(
+                self.on_selectionChanged_column)
             # Thêm dữ liệu vào table widget
 
             for user in self.user_list1:
@@ -299,13 +300,26 @@ class TableView:
         for ix in selected.indexes():
             index = int(format(ix.row()))
             self.column_selected = self.user_list1[index][0]
-            print(self.column_selected)
 
     def click_grant_submit(self):
         if self.selectOption == False and self.insertOption == False and self.updateOption == False and self.deleteOption == False:
             MessageBoxErr("Lỗi", "Vui lòng chọn đủ thông tin")
         else:
-            print('run')
+            if self.selectOption:
+                pri = 'select'
+            elif self.insertOption:
+                pri = 'insert'
+            elif self.updateOption:
+                pri = 'update'
+            elif self.deleteOption:
+                pri = 'delete'
+            if self.grantOption:
+                op = 'WITH GRANT OPTION'
+            else:
+                op = ''
+            result = self.TableController.Grant_Pri(
+                pri, self.input.text(), self.table_selected, op, self.column_selected)
+
 
 def MessageBoxErr(title, message):
     messagebox.showerror(title, message)
