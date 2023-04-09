@@ -1,62 +1,26 @@
 from utils.database import execute_query
 import utils.auth as login
 
+
 class table_Controller:
     def display_table_list(self):
         result = execute_query(
             login.myList[0], login.myList[1], "SELECT Owner, table_name FROM all_tables WHERE table_name = upper('" + "demo')")
         return result
-    def Grant_Pri_User(self, name, table, option):
-        result = execute_query(
-            login.myList[0], login.myList[1], 'grant select on {0} to {1} {2}'.format(table, name, option))
+
+    def Grant_Pri(self, pri, name, table, option, col):
+        if col == '' or pri == 'insert' or pri == 'delete':
+            result = execute_query(
+                login.myList[0], login.myList[1], 'grant {0} on SYS.{1} to {2} {3}'.format(pri, table, name, option))
+        elif (pri == 'select'):
+            result = execute_query(
+                login.myList[0], login.myList[1], 'grant {0}({1}) on SYS.UV_{2} to {3} {4}'.format(pri, col, table, name, option))
+        elif (pri == 'update'):
+            result = execute_query(
+                login.myList[0], login.myList[1], 'grant {0}({1}) on SYS.{2} to {3} {4}'.format(pri, col, table, name, option))
         return result
-    
+
     def get_column_name(self, table):
         result = execute_query(
-            login.myList[0], login.myList[1], "SELECT column_name FROM all_tab_cols WHERE table_name = upper('" + table +"')")
+            login.myList[0], login.myList[1], "SELECT column_name FROM all_tab_cols WHERE table_name = upper('" + table + "')")
         return result
-    
-    # def Drop_User(self, user_name):
-    #     result = execute_query(
-    #         login.myList[0], login.myList[1], 'DROP USER {0}'.format(user_name))
-    #     return result
-    
-    # def New_Password(self, user_name, newpassword):
-    #     result = execute_query(
-    #         login.myList[0], login.myList[1], 'ALTER USER {0} IDENTIFIED BY {1}'.format(user_name, newpassword))
-    #     return result
-    
-    # def Create_User(self, user_name, password):
-    #     result = execute_query(
-    #         login.myList[0], login.myList[1], 'CREATE USER {0} IDENTIFIED BY {1}'.format(user_name, password))
-    #     return result
-    
-    # def display_role_of_user(self, user_name):
-    #     result = execute_query(
-    #         login.myList[0], login.myList[1], 'SELECT granted_role, admin_option, delegate_option, default_role, common, inherited FROM SYS.DBA_ROLE_PRIVS WHERE grantee = ' + "'{0}'".format(user_name))
-    #     return result
-    
-    # def Revoke_Role_From_User(self, role_name, user_name):
-    #     result = execute_query(
-    #         login.myList[0], login.myList[1], 'REVOKE {0} FROM {1}'.format(role_name, user_name))
-    #     return result
-    
-    # def display_tabprivs_of_user(self, user_name):
-    #     result = execute_query(
-    #         login.myList[0], login.myList[1], 'SELECT owner, table_name, grantor, privilege, grantable FROM SYS.DBA_TAB_PRIVS WHERE grantee = ' + "'{0}'".format(user_name))
-    #     return result
-    
-    # def Revoke_TabPrivs_From_User(self, pri_name, table_name, user_name):
-    #     result = execute_query(
-    #         login.myList[0], login.myList[1], 'REVOKE {0} ON {1} FROM {2}'.format(pri_name, table_name, user_name))
-    #     return result
-    
-    # def display_privs_of_user(self, user_name):
-    #     result = execute_query(
-    #         login.myList[0], login.myList[1], 'SELECT privilege, admin_option, common, inherited FROM SYS.DBA_SYS_PRIVS WHERE grantee = ' + "'{0}'".format(user_name))
-    #     return result
-    
-    # def Revoke_Privs_From_User(self, pri_name, user_name):
-    #     result = execute_query(
-    #         login.myList[0], login.myList[1], 'REVOKE {0} FROM {1}'.format(pri_name, user_name))
-    #     return result
