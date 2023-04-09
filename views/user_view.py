@@ -32,7 +32,7 @@ class UserList:
         self.scroll_area.setWidget(self.table_widget)
         self.main_window.setCentralWidget(self.scroll_area)
 
-        self.main_window.resize(640,480)
+        self.main_window.resize(700, 520)
 
         #User Name
         self.user_name = QtWidgets.QLabel(self.main_window)

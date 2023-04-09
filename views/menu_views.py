@@ -20,7 +20,7 @@ class MainWindown():
         # Thiết lập tiêu đề cho cửa sổ
         self.main_window.setWindowTitle('Menu')
         # Thiết lập kích thước cho widget
-        self.main_window.resize(640,480)
+        self.main_window.resize(700, 520)
 
         # Hiện thị danh sách user
         self.button_user = QtWidgets.QPushButton('Danh sách user', self.main_window)

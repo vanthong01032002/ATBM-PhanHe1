@@ -7,9 +7,9 @@ class PrivilegesController:
 
         sql = "SELECT GRANTEE, TABLE_NAME, PRIVILEGE FROM dba_tab_privs"
         if search_text:
-            sql += f" WHERE grantee = '{search_text}'"
+            sql += f" WHERE grantee = '{search_text}' FETCH FIRST 500 ROWS ONLY"
         else:
-            sql = "SELECT GRANTEE, TABLE_NAME, PRIVILEGE FROM dba_tab_privs"
+            sql = "SELECT GRANTEE, TABLE_NAME, PRIVILEGE FROM dba_tab_privs FETCH FIRST 500 ROWS ONLY"
             
         result = execute_query(login.myList[0], login.myList[1], sql)
             

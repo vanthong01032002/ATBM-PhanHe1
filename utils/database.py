@@ -2,7 +2,7 @@ import sys
 import cx_Oracle
 
 
-def connection1(username, password, queryString):
+def execute_query(username, password, queryString):
     try:
         con = cx_Oracle.connect(username, password, 'localhost:1521/XEPDB1')
 
@@ -32,26 +32,11 @@ def connection1(username, password, queryString):
                 cur.close()
             return False
 
-oracle_client_initialized = False
-
-def initialize_oracle_client(lib_dir):
-    global oracle_client_initialized
-    if not oracle_client_initialized:
-        try:
-            cx_Oracle.init_oracle_client(lib_dir=lib_dir)
-            oracle_client_initialized = True
-        except Exception as err:
-            print("Error initializing Oracle Client:", err)
-            sys.exit(1)
-
 def connection2(username, password):
-    #lib_dir = r"C:\oclient\instantclient-basic-windows.x64-21.9.0.0.0dbru\instantclient_21_9"
-    lib_dir = r"D:\Download\instantclient-basic-windows.x64-21.9.0.0.0dbru\instantclient_21_9"
-    initialize_oracle_client(lib_dir)
-    
+    # lib_dir = r"D:\Download\instantclient-basic-windows.x64-21.9.0.0.0dbru\instantclient_21_9"    
     try:
         con = cx_Oracle.connect(username, password, 'localhost:1521/XEPDB1')
-        return con.cursor()
+        return con
 
     except cx_Oracle.DatabaseError as er:
         print('There is an error in the Oracle database:', er)
@@ -62,17 +47,18 @@ def connection2(username, password):
         return False
 
 
-def execute_query(username, password, query_string):
-    cursor = connection2(username, password)
-    if cursor:
-        try:
-            cursor.execute(query_string)
-            result = cursor.fetchall()
-            cursor.close()
-            return result
-        except cx_Oracle.DatabaseError as er:
-            print('There is an error in the Oracle database:', er)
-            cursor.close()
-            return False
-    else:
-        return False
+# def execute_query(username, password, query_string):
+#     result = connection2(username, password)
+#     cursor = result.cursor()
+#     if cursor:
+#         try:
+#             cursor.execute(query_string)
+#             result = cursor.fetchall()
+#             cursor.close()
+#             return result
+#         except cx_Oracle.DatabaseError as er:
+#             print('There is an error in the Oracle database:', er)
+#             cursor.close()
+#             return False
+#     else:
+#         return False

@@ -43,6 +43,7 @@ class LoginWindow:
         self.password_input.setStyleSheet("QLineEdit { padding-left: 20px; }")
         self.password_input.setFixedWidth(160)
         self.password_input.move(250,150)
+        self.password_input.setEchoMode(QLineEdit.Password)
 
         #  Thiết lập button login
         btn_login = QPushButton(self.login_window)
@@ -68,7 +69,10 @@ class LoginWindow:
             self.login_window.close()
             # Đăng nhập thành công, chuyển qua trang menu
             Main_Windown = MainWindown()
-            MainWindown.show()
+            Main_Windown.show()
+        else:
+            MessageBoxErr("Dang nhap", "That Bai")
+            
 
 def MessageBoxInfo(title, message):
     messagebox.showinfo(title, message)

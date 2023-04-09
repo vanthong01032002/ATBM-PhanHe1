@@ -20,7 +20,7 @@ class privilegesView:
         # Thiết lập tiêu đề cho cửa sổ
         self.main_window.setWindowTitle('Danh sách thông tin quyền')
         # Thiết lập kích thước cho widget
-        self.main_window.resize(640,480)
+        self.main_window.resize(700, 520)
         
         # Thiết lập p hiện thị nhập user
         self.user_name = QtWidgets.QLabel(self.main_window)

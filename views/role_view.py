@@ -1,15 +1,16 @@
 import sys
 # from PySide2 import QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QPushButton, QWidget
 from PyQt5 import QtCore, QtWidgets
-
+import messagebox
 from controllers.role_controller import RoleController
 
 
 class RoleView:
     def __init__(self):
         self.role_controller = RoleController()
-        self.roles = self.role_controller.get_role_list()
-
+        self.roles = []
         # Khởi tạo đối tượng QMainWindow
         self.main_window = QtWidgets.QMainWindow()
 
@@ -26,6 +27,7 @@ class RoleView:
                            "Implicit": ""}
 
         # Khởi tạo table widget để hiển thị danh sách người dùng
+        self.roles = self.role_controller.get_role_list()
         self.table_widget = QtWidgets.QTableWidget()
         self.table_widget.setColumnCount(7)  # Đặt số lượng cột cho table widget
         self.table_widget.setHorizontalHeaderLabels(["Role Name",
@@ -59,8 +61,8 @@ class RoleView:
         # Tạo khung cuộn
         self.scroll_area = QtWidgets.QScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setFixedWidth(400)
-        self.scroll_area.setFixedHeight(300)
+        self.scroll_area.setFixedWidth(450)
+        self.scroll_area.setFixedHeight(400)
 
         # Đặt bảng trong khung cuộn
         self.scroll_area.setWidget(self.table_widget)
@@ -69,119 +71,119 @@ class RoleView:
         self.main_window.setCentralWidget(self.scroll_area)
 
         # Thiết lập kích thước cho widget
-        self.main_window.resize(640, 480)
+        self.main_window.resize(700, 520)
 
         # Role Name
         self.role_name = QtWidgets.QLabel(self.main_window)
         self.role_name.setText("Role Name: ")
         self.role_name.setStyleSheet("font-size: 14px;")
 
-        self.role_name.move(410, 0)
+        self.role_name.move(480, 0)
 
         self.txt_role = QtWidgets.QLineEdit(self.main_window)
         self.txt_role.setFixedWidth(160)
         self.txt_role.setText(self.data_Roles["Role Name"])
-        self.txt_role.move(410, 25)
+        self.txt_role.move(480, 25)
 
         # Password
         self.Password_name = QtWidgets.QLabel(self.main_window)
         self.Password_name.setText("Password: ")
         self.Password_name.setStyleSheet("font-size: 14px;")
 
-        self.Password_name.move(410, 50)
+        self.Password_name.move(480, 50)
 
         self.txt_Password = QtWidgets.QLineEdit(self.main_window)
         self.txt_Password.setFixedWidth(160)
         self.txt_Password.setText(self.data_Roles["Password"])
-        self.txt_Password.move(410, 75)
+        self.txt_Password.move(480, 75)
 
         # Authentication
         self.Authentication_name = QtWidgets.QLabel(self.main_window)
         self.Authentication_name.setText("Authentication: ")
         self.Authentication_name.setStyleSheet("font-size: 14px;")
 
-        self.Authentication_name.move(410, 100)
+        self.Authentication_name.move(480, 100)
 
         self.txt_Authentication = QtWidgets.QLineEdit(self.main_window)
         self.txt_Authentication.setFixedWidth(160)
         self.txt_Authentication.setText(self.data_Roles["Authentication"])
-        self.txt_Authentication.move(410, 125)
+        self.txt_Authentication.move(480, 125)
 
         # Common
         self.Common_name = QtWidgets.QLabel(self.main_window)
         self.Common_name.setText("Common: ")
         self.Common_name.setStyleSheet("font-size: 14px;")
 
-        self.Common_name.move(410, 150)
+        self.Common_name.move(480, 150)
 
         self.txt_Common = QtWidgets.QLineEdit(self.main_window)
         self.txt_Common.setFixedWidth(160)
         self.txt_Common.setText(self.data_Roles["Common"])
-        self.txt_Common.move(410, 175)
+        self.txt_Common.move(480, 175)
 
         # Oracle maintained
         self.Oracle_Maintained_name = QtWidgets.QLabel(self.main_window)
         self.Oracle_Maintained_name.setText("Oracle maintained: ")
         self.Oracle_Maintained_name.setStyleSheet("font-size: 14px;")
 
-        self.Oracle_Maintained_name.move(410, 200)
+        self.Oracle_Maintained_name.move(480, 200)
 
         self.txt_Oracle_Maintained = QtWidgets.QLineEdit(self.main_window)
         self.txt_Oracle_Maintained.setFixedWidth(160)
         self.txt_Oracle_Maintained.setText(
             self.data_Roles["Oracle maintained"])
-        self.txt_Oracle_Maintained.move(410, 225)
+        self.txt_Oracle_Maintained.move(480, 225)
 
         # Inherited
         self.Inherited_name = QtWidgets.QLabel(self.main_window)
         self.Inherited_name.setText("Inherited: ")
         self.Inherited_name.setStyleSheet("font-size: 14px;")
 
-        self.Inherited_name.move(410, 250)
+        self.Inherited_name.move(480, 250)
 
         self.txt_Inherited = QtWidgets.QLineEdit(self.main_window)
         self.txt_Inherited.setFixedWidth(160)
         self.txt_Inherited.setText(self.data_Roles["Inherited"])
-        self.txt_Inherited.move(410, 275)
+        self.txt_Inherited.move(480, 275)
 
         # Implicit
         self.Implicit_name = QtWidgets.QLabel(self.main_window)
         self.Implicit_name.setText("Implicit: ")
         self.Implicit_name.setStyleSheet("font-size: 14px;")
 
-        self.Implicit_name.move(410, 300)
+        self.Implicit_name.move(480, 300)
 
         self.txt_Implicit = QtWidgets.QLineEdit(self.main_window)
         self.txt_Implicit.setFixedWidth(160)
         self.txt_Implicit.setText(self.data_Roles["Implicit"])
-        self.txt_Implicit.move(410, 325)
+        self.txt_Implicit.move(480, 325)
 
         # Add button
         self.btn_add = QtWidgets.QPushButton(self.main_window)
         self.btn_add.setText("Thêm role")
         self.btn_add.setMinimumWidth(100)
-        self.btn_add.move(30, 360)
+        self.btn_add.move(30, 410)
         self.btn_add.clicked.connect(self.Add_Role)
 
         # Recall table button
         self.btn_recall = QtWidgets.QPushButton(self.main_window)
         self.btn_recall.setText("Thu hồi quyền bảng")
         self.btn_recall.setMinimumWidth(150)
-        self.btn_recall.move(160, 360)
+        self.btn_recall.move(160, 410)
         self.btn_recall.clicked.connect(self.Recall_Role_Table)
 
         # Recall Sys button
         self.btn_recall = QtWidgets.QPushButton(self.main_window)
         self.btn_recall.setText("Thu hồi quyền hệ thống")
         self.btn_recall.setMinimumWidth(150)
-        self.btn_recall.move(320, 360)
+        self.btn_recall.move(320, 410)
         self.btn_recall.clicked.connect(self.Recall_Role_Sys)
 
         # Delete button
         self.btn_delete = QtWidgets.QPushButton(self.main_window)
         self.btn_delete.setText("Xoá role")
         self.btn_delete.setMinimumWidth(100)
-        self.btn_delete.move(500, 360)
+        self.btn_delete.move(500, 410)
         self.btn_delete.clicked.connect(self.Delete_Role)
 
         # Title: Thêm role
@@ -190,35 +192,53 @@ class RoleView:
         self.title_role_create.setText("Thêm role")
         self.title_role_create.setStyleSheet("font-size: 15px;")
 
-        self.title_role_create.move(280, 400)
+        self.title_role_create.move(200, 450)
 
         # Create role name
         self.role_name_create = QtWidgets.QLabel(self.main_window)
         self.role_name_create.setText("Role Name: ")
         self.role_name_create.setStyleSheet("font-size: 14px;")
 
-        self.role_name_create.move(50, 410)
+        self.role_name_create.move(20, 445)
 
         self.txt_role_name_create = QtWidgets.QLineEdit(self.main_window)
         self.txt_role_name_create.setFixedWidth(160)
         self.txt_role_name_create.setText("")
-        self.txt_role_name_create.move(50, 435)
+        self.txt_role_name_create.move(20, 470)
 
         # Create role password
         self.role_password_create = QtWidgets.QLabel(self.main_window)
         self.role_password_create.setText("Role password: ")
         self.role_password_create.setStyleSheet("font-size: 14px;")
 
-        self.role_password_create.move(450, 410)
+        self.role_password_create.move(340, 445)
 
         self.txt_role_password_create = QtWidgets.QLineEdit(self.main_window)
         self.txt_role_password_create.setFixedWidth(160)
         self.txt_role_password_create.setText("")
-        self.txt_role_password_create.move(450, 435)
+        self.txt_role_password_create.move(340, 470)
+
+        #Thiết lập button search
+        self.btn_back = QtWidgets.QPushButton(self.main_window)
+        self.btn_back.setFixedSize(60,30)  # đặt kích thước là 40x40 pixel
+        self.btn_back.setStyleSheet('background-color: #3450D9; color: #fff')
+        self.btn_back.setText("BACK")
+        self.btn_back.move(610,470)
+        self.btn_back.setCursor(Qt.PointingHandCursor)
+
+        self.btn_back.clicked.connect(self.Backmenu)
 
         # Hiển thị widget
         self.main_window.show()
+    def Backmenu(self):
 
+        from views.menu_views import MainWindown
+
+        self.main_window.close()
+
+        Menu_Windown = MainWindown()
+        Menu_Windown.show()
+        
     def on_selectionChanged(self, selected, deselected):
         for ix in selected.indexes():
             index = int(format(ix.row()))
@@ -238,32 +258,40 @@ class RoleView:
             self.txt_Inherited.setText(self.data_Roles["Inherited"])
             self.txt_Implicit.setText(self.data_Roles["Implicit"])
             # print('Row: {0}, Column: {1}'. format(ix.row(), ix.column()))
+      
+    def update_list(self):
 
+        self.roles = self.role_controller.get_role_list()
+        if self.table_widget is not None:
+            self.table_widget.clearContents()
+            self.table_widget.setRowCount(0)
+            self.table_widget.setRowCount(len(self.roles))
+            self.table_widget.selectionModel().selectionChanged.connect(self.on_selectionChanged)
+            for row, role in enumerate(self.roles):
+                self.table_widget.setItem(
+                    row, 0, QtWidgets.QTableWidgetItem(str(role[0])))
+                self.table_widget.setItem(
+                    row, 1, QtWidgets.QTableWidgetItem(str(role[2])))
+                self.table_widget.setItem(
+                    row, 2, QtWidgets.QTableWidgetItem(str(role[3])))
+                self.table_widget.setItem(
+                    row, 3, QtWidgets.QTableWidgetItem(str(role[4])))
+                self.table_widget.setItem(
+                    row, 4, QtWidgets.QTableWidgetItem(str(role[5])))
+                self.table_widget.setItem(
+                    row, 5, QtWidgets.QTableWidgetItem(str(role[6])))
+                self.table_widget.setItem(
+                    row, 6, QtWidgets.QTableWidgetItem(str(role[7])))
     def Add_Role(self):
         if self.txt_role_name_create.text() == '':
             MessageBoxErr("Lỗi", "Vui lòng nhập role name")
         else:
             result = self.role_controller.Add_Role(
                 self.txt_role_name_create.text(), self.txt_role_password_create.text())
-            self.roles = self.role_controller.get_role_list()
-            for role in self.roles:
-                row_position = self.table_widget.rowCount()
-            self.table_widget.insertRow(row_position)
-            self.table_widget.setItem(
-                row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
-            self.table_widget.setItem(
-                row_position, 1, QtWidgets.QTableWidgetItem(str(role[2])))
-            self.table_widget.setItem(
-                row_position, 2, QtWidgets.QTableWidgetItem(str(role[3])))
-            self.table_widget.setItem(
-                row_position, 3, QtWidgets.QTableWidgetItem(str(role[4])))
-            self.table_widget.setItem(
-                row_position, 4, QtWidgets.QTableWidgetItem(str(role[5])))
-            self.table_widget.setItem(
-                row_position, 5, QtWidgets.QTableWidgetItem(str(role[6])))
-            self.table_widget.setItem(
-                row_position, 6, QtWidgets.QTableWidgetItem(str(role[7])))
-            print(result)
+            self.role = self.role_controller.get_role_list()
+            self.update_list()
+            return result
+        
 
     def Recall_Role_Table(self):
         if self.data_Roles["Role Name"] == '':
@@ -583,7 +611,7 @@ class RoleView:
         else:
             result = self.role_controller.Delete_Role(
                 self.data_Roles["Role Name"])
-            print(result)
+            self.update_list()
 
 
 def MessageBoxErr(title, message):
