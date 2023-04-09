@@ -42,3 +42,8 @@ class RoleController:
         result = execute_query(
             login.myList[0], login.myList[1], 'DROP ROLE {0}'.format(role_name))
         return result
+
+    def Grant_Role(self, role_name, user_name):
+        result = execute_query(
+            login.myList[0], login.myList[1], 'GRANT {0} TO {1}'.format(role_name, user_name))
+        return result

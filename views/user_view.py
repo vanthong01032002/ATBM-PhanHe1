@@ -2,6 +2,7 @@ import sys
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import Qt
 from controllers.user_controller import User_Controller
+from controllers.role_controller import RoleController
 import messagebox
 import utils.variable as value
 class UserList:
@@ -82,6 +83,13 @@ class UserList:
         self.btn_rPri.move(470, 230)
         self.btn_rPri.clicked.connect(self.Revoke_Privs_View)
         
+        #Grant Role Button
+        self.btn_gRole = QtWidgets.QPushButton(self.main_window)
+        self.btn_gRole.setText("Grant Role")
+        self.btn_gRole.setMinimumWidth(150)
+        self.btn_gRole.move(470, 270)
+        self.btn_gRole.clicked.connect(self.Grant_Role_View)
+
          #Thiết lập button back
         self.btn_back = QtWidgets.QPushButton(self.main_window)
         self.btn_back.setFixedSize(60,30)  # đặt kích thước là 40x40 pixel
@@ -120,6 +128,95 @@ class UserList:
 
     def New_password(self):
         self.user_controller.New_Password(self.data_Users["User Name"], self.txt_change.text())
+#Grant Role
+    def Grant_Role_View(self):
+
+        self.sub_window = QtWidgets.QMainWindow()
+        self.sub_window.setWindowTitle('USER: {0}'.format(self.txt_role.text()))
+        self.user_controller4 = RoleController()
+        self.role_list = self.user_controller4.get_role_list()
+        self.data_Roles = {"Role Name": "",
+                           "Password": "",
+                           "Authentication": "",
+                           "Common": "",
+                           "Oracle maintained": "",
+                           "Inherited": "",
+                           "Implicit": ""}
+        self.table_widget = QtWidgets.QTableWidget()
+        self.table_widget.setColumnCount(7)  # Đặt số lượng cột cho table widget
+        self.table_widget.setHorizontalHeaderLabels(["Role Name",
+                                                "Password",
+                                                "Authentication",
+                                                "Common",
+                                                "Oracle maintained",
+                                                "Inherited",
+                                                "Implicit"])
+        self.table_widget.selectionModel().selectionChanged.connect(self.on_sel4)
+        for role in self.role_list:
+            row_position = self.table_widget.rowCount()
+            self.table_widget.insertRow(row_position)
+            self.table_widget.setItem(
+                row_position, 0, QtWidgets.QTableWidgetItem(str(role[0])))
+            self.table_widget.setItem(
+                row_position, 1, QtWidgets.QTableWidgetItem(str(role[2])))
+            self.table_widget.setItem(
+                row_position, 2, QtWidgets.QTableWidgetItem(str(role[3])))
+            self.table_widget.setItem(
+                row_position, 3, QtWidgets.QTableWidgetItem(str(role[4])))
+            self.table_widget.setItem(
+                row_position, 4, QtWidgets.QTableWidgetItem(str(role[5])))
+            self.table_widget.setItem(
+                row_position, 5, QtWidgets.QTableWidgetItem(str(role[6])))
+            self.table_widget.setItem(
+                row_position, 6, QtWidgets.QTableWidgetItem(str(role[7])))
+        
+        # Thiết lập layout cho widget
+        # Tạo khung cuộn
+        self.scroll_area = QtWidgets.QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setFixedWidth(420)
+        self.scroll_area.setFixedHeight(450)
+
+        # Đặt bảng trong khung cuộn
+        self.scroll_area.setWidget(self.table_widget)
+
+        # Đặt khung cuộn vào cửa sổ chính
+        self.sub_window.setCentralWidget(self.scroll_area)
+
+        # Thiết lập kích thước cho widget
+        self.sub_window.resize(640,480)
+
+        #Role Name
+        self.role_name = QtWidgets.QLabel(self.sub_window)
+        self.role_name.setText("Role Name: ")
+        self.role_name.setStyleSheet("font-size: 14px;")
+        self.role_name.move(480,0)
+
+        self.txt_role1 = QtWidgets.QLineEdit(self.sub_window)
+        self.txt_role1.setFixedWidth(160)
+        self.txt_role1.setText(self.data_Roles["Role Name"])
+        self.txt_role1.move(440, 25)
+
+        #Revoke Button
+        self.btn_revoke = QtWidgets.QPushButton(self.sub_window)
+        self.btn_revoke.setText("GRANT")
+        self.btn_revoke.setMinimumWidth(100)
+        self.btn_revoke.move(470, 70)
+        self.btn_revoke.clicked.connect(self.Grant_Role)
+
+        self.sub_window.show()
+
+    def Grant_Role(self):
+        if self.txt_role1.text() == '':
+            MessageBoxErr("Lỗi", "Vui lòng chọn role")
+        else:
+            self.user_controller4.Grant_Role(self.txt_role1.text(), self.txt_role.text())
+
+    def on_sel4(self, selected, deselected):
+        for ix in selected.indexes():
+            index = int(format(ix.row()))
+            self.data_Roles = {"Role Name": self.role_list[index][0]}
+            self.txt_role1.setText(self.data_Roles["Role Name"])
 
 #Create User
     def Create_User_View(self):
