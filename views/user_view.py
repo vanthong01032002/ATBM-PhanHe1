@@ -429,11 +429,6 @@ class UserList:
 
     def closeWindow(self):
         self.main_window.hide()
+        
     def showWindow(self):
         self.main_window.show()
-
-def MessageBoxErr(title, message):
-    messagebox.showerror(title, message)
-
-def MessageBoxWarn(title, message):
-    messagebox.showwarning(title, message)

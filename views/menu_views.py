@@ -9,6 +9,7 @@ from PySide2 import QtGui, QtCore
 from views.privileges_view import privilegesView
 from views.role_view import RoleView
 from views.user_view import UserList
+from views.table_view import TableView
 
 import utils.variable as value
 
@@ -43,9 +44,19 @@ class MainWindown():
         self.button_pri = QtWidgets.QPushButton('Danh sách quyền User/Role', self.main_window)
         self.button_pri.move(120,220)
         self.button_pri.setFixedSize(180, 60)  # Thiết lập kích thước cố định
+
         # thiết lập hover cursor
         self.button_pri.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.button_pri.clicked.connect(self.on_click_privileges)
+
+        # Hiện thị danh sách quyền của role/user
+        self.button_table = QtWidgets.QPushButton('Danh sách table', self.main_window)
+        self.button_table.move(340,220)
+        self.button_table.setFixedSize(180, 60)  # Thiết lập kích thước cố định
+
+        # thiết lập hover cursor
+        self.button_table.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.button_table.clicked.connect(self.on_click_table)
     def on_click_user(self):
         value.main_window.closeWindow()
         value.user_window = UserList()
@@ -58,6 +69,10 @@ class MainWindown():
         value.main_window.closeWindow()
         value.privileges_window = privilegesView()
         value.privileges_window.showWindow()
+    def on_click_table(self):
+        value.main_window.closeWindow()
+        value.table_window = TableView()
+        value.table_window.showWindow()
     def closeWindow(self):
         self.main_window.hide()
     def showWindow(self):
