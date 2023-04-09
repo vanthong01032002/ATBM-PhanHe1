@@ -24,6 +24,8 @@ class TableView:
 
         self.user_list = []
 
+        self.column_selected = []
+
         self.search_text = ""  # Khởi tạo biến "search_text" với giá trị rỗng
 
         # Khởi tạo đối tượng QMainWindow
@@ -36,7 +38,7 @@ class TableView:
 
         # Thiết lập p hiện thị nhập user
         self.user_name = QtWidgets.QLabel(self.main_window)
-        self.user_name.setText("Nhập user name  : ")
+        self.user_name.setText("Nhập user/role name muốn cấp quyền : ")
         self.user_name.setStyleSheet("font-size: 16px;")
         self.user_name.adjustSize()
         self.user_name.move(410, 20)
@@ -69,45 +71,8 @@ class TableView:
         self.btn_submit.clicked.connect(self.clicked_submit)
         self.btn_submit.move(570, 110)
 
-        # Thiết lập p hiện thị nhập role
-        self.role_name = QtWidgets.QLabel(self.main_window)
-        self.role_name.setText("Nhập role name  : ")
-        self.role_name.setStyleSheet("font-size: 16px;")
-        self.role_name.adjustSize()
-        self.role_name.move(410, 200)
-
-        # Radio button for none option
-        self.radioButton_none2 = QtWidgets.QRadioButton(self.main_window)
-        self.radioButton_none2.setGeometry(QtCore.QRect(410, 230, 160, 20))
-        self.radioButton_none2.setText("NONE")
-        self.radioButton_none2.toggled.connect(self.selectedNone)
-
-        # Radio button for grant option
-        self.radioButton_grant2 = QtWidgets.QRadioButton(self.main_window)
-        self.radioButton_grant2.setGeometry(QtCore.QRect(410, 260, 160, 20))
-        self.radioButton_grant2.setText("WITH GRANT OPTION")
-        self.radioButton_grant2.toggled.connect(self.selectedGrant)
-
-        # Thiết lập ô nhập input
-        self.input2 = QtWidgets.QLineEdit(self.main_window)
-        self.input2.setPlaceholderText("User name...")
-        self.input2.setStyleSheet("QLineEdit { padding-left: 16px; }")
-        self.input2.setFixedWidth(160)
-        self.input2.setFixedHeight(30)
-        self.input2.move(410, 290)
-
-        # Thiết lập button submit
-        self.btn_submit2 = QtWidgets.QPushButton(self.main_window)
-        self.btn_submit2.setFixedSize(60, 30)  # đặt kích thước là 40x40 pixel
-        self.btn_submit2.setStyleSheet(
-            'background-color: #999999; color: #fff')
-        self.btn_submit2.setText("Cấp")
-        self.btn_submit2.clicked.connect(self.clicked_submit2)
-        self.btn_submit2.move(570, 290)
-
         # thiết lập hover cursor
         self.btn_submit.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btn_submit2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
         self.user_list = self.TableController.display_table_list()
 
@@ -283,10 +248,6 @@ class TableView:
 
             self.main_window1.show()
 
-    def clicked_submit2(self):
-        self.search_text = self.search_bar.text()
-        self.update_user_list(self.search_text)
-
     def Backmenu(self):
         value.table_window.closeWindow()
         value.main_window.showWindow()
@@ -296,13 +257,25 @@ class TableView:
             index = int(format(ix.row()))
             self.table_selected = self.user_list[index][1]
 
+
     def on_selectionChanged_column(self, selected, deselected):
         for ix in selected.indexes():
             index = int(format(ix.row()))
-            self.column_selected = self.user_list1[index][0]
+            self.column_selected.append(self.user_list1[index][0])
+
+            alternative_color = QtGui.QColor("salmon")
+
+            current_brush = ix.data(QtCore.Qt.BackgroundRole)
+            new_brush = (
+                QtGui.QBrush(alternative_color)
+                if current_brush in (None, QtGui.QBrush())
+                else QtGui.QBrush()
+            )
+            self.table_widget1.model().setData(ix, new_brush, QtCore.Qt.BackgroundRole)
 
     def click_grant_submit(self):
         if self.selectOption == False and self.insertOption == False and self.updateOption == False and self.deleteOption == False:
+            # print(self.column_selected)
             MessageBoxErr("Lỗi", "Vui lòng chọn đủ thông tin")
         else:
             if self.selectOption:
@@ -319,6 +292,7 @@ class TableView:
                 op = ''
             result = self.TableController.Grant_Pri(
                 pri, self.input.text(), self.table_selected, op, self.column_selected)
+            return result
 
 
 def MessageBoxErr(title, message):
