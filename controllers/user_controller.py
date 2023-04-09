@@ -52,3 +52,4 @@ class User_Controller:
         result = execute_query(
             login.myList[0], login.myList[1], 'REVOKE {0} FROM {1}'.format(pri_name, user_name))
         return result
+    
