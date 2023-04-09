@@ -1,8 +1,11 @@
 import sys
 from PySide2 import QtWidgets
+from PyQt5.QtCore import Qt
+
 from PySide2.QtWidgets import QWidget, QDialog
 from PySide2 import QtGui, QtCore
 from controllers.privileges_controller import PrivilegesController
+import utils.variable as value
 
 class privilegesView:
     def __init__(self):
@@ -88,8 +91,21 @@ class privilegesView:
         scroll_area.setWidget(self.table_widget)
         # # Thêm tab_widget vào QMainWindow
         self.main_window.setCentralWidget(scroll_area)
-        self.main_window.show()
 
+        #Thiết lập button back
+        self.btn_back = QtWidgets.QPushButton(self.main_window)
+        self.btn_back.setFixedSize(60,30)  # đặt kích thước là 40x40 pixel
+        self.btn_back.setStyleSheet('background-color: #3450D9; color: #fff')
+        self.btn_back.setText("BACK")
+        self.btn_back.move(610,470)
+        # self.btn_back.setCursor(Qt.PointingHandCursor)
+
+        self.btn_back.clicked.connect(self.Backmenu)
+
+    def closeWindow(self):
+        self.main_window.hide()
+    def showWindow(self):
+        self.main_window.show()
         
     def update_user_list(self, search_text=None):
         self.user_list = self.PrivilegesController.get_user_list(search_text)
@@ -108,3 +124,7 @@ class privilegesView:
     def clicked_btn(self):
         self.search_text = None
         self.update_user_list(self.search_text)
+
+    def Backmenu(self):
+        value.privileges_window.closeWindow()
+        value.main_window.showWindow()

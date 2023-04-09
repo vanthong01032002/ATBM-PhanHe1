@@ -1,7 +1,9 @@
 import sys
 from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import Qt
 from controllers.user_controller import User_Controller
 import messagebox
+import utils.variable as value
 class UserList:
     def __init__(self):
         self.user_controller = User_Controller()
@@ -79,9 +81,16 @@ class UserList:
         self.btn_rPri.setMinimumWidth(150)
         self.btn_rPri.move(470, 230)
         self.btn_rPri.clicked.connect(self.Revoke_Privs_View)
+        
+         #Thiết lập button back
+        self.btn_back = QtWidgets.QPushButton(self.main_window)
+        self.btn_back.setFixedSize(60,30)  # đặt kích thước là 40x40 pixel
+        self.btn_back.setStyleSheet('background-color: #3450D9; color: #fff')
+        self.btn_back.setText("BACK")
+        self.btn_back.move(610,470)
+        self.btn_back.setCursor(Qt.PointingHandCursor)
 
-        # Hiển thị widget
-        self.main_window.show()
+        self.btn_back.clicked.connect(self.Backmenu)
 
     def on_sel(self, selected, deselected):
         for ix in selected.indexes():
@@ -153,7 +162,10 @@ class UserList:
         else:
             self.user_controller.Create_User(self.txt_user_name.text(), self.txt_password.text())
             self.update_user_list()
-        
+    
+    def Backmenu(self):
+        value.user_window.closeWindow()
+        value.main_window.showWindow()
 
 #Revoke Role
     def Revoke_Role_View(self):
@@ -415,6 +427,10 @@ class UserList:
                 self.table_widget.setItem(row, 2, QtWidgets.QTableWidgetItem(str(priv[2])))  
                 self.table_widget.setItem(row, 3, QtWidgets.QTableWidgetItem(str(priv[3])))
 
+    def closeWindow(self):
+        self.main_window.hide()
+    def showWindow(self):
+        self.main_window.show()
 
 def MessageBoxErr(title, message):
     messagebox.showerror(title, message)

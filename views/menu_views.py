@@ -10,6 +10,7 @@ from views.privileges_view import privilegesView
 from views.role_view import RoleView
 from views.user_view import UserList
 
+import utils.variable as value
 
 class MainWindown():
     def __init__(self):
@@ -45,17 +46,19 @@ class MainWindown():
         # thiết lập hover cursor
         self.button_pri.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.button_pri.clicked.connect(self.on_click_privileges)
-
-        self.main_window.show()
     def on_click_user(self):
-        self.main_window.close()  # hide the main window
-        User_list = UserList()
-        User_list.show()
+        value.main_window.closeWindow()
+        value.user_window = UserList()
+        value.user_window.showWindow()
     def on_click_role(self):
-        self.main_window.close()  # hide the main window
-        Role_view = RoleView()
-        Role_view.show()
+        value.main_window.closeWindow()
+        value.role_window = RoleView()
+        value.role_window.showWindow()
     def on_click_privileges(self):
-        self.main_window.close()  # hide the main window
-        privileges_View = privilegesView()
-        privileges_View.show()
+        value.main_window.closeWindow()
+        value.privileges_window = privilegesView()
+        value.privileges_window.showWindow()
+    def closeWindow(self):
+        self.main_window.hide()
+    def showWindow(self):
+        self.main_window.show()

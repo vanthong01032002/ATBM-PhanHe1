@@ -5,6 +5,9 @@ import messagebox
 from PySide2 import QtGui, QtCore
 from controllers.login_controller import LoginController
 from views.menu_views import MainWindown
+
+import utils.variable as value
+
 class LoginWindow:
     def __init__(self):
         self.login_controllers = LoginController()
@@ -66,12 +69,16 @@ class LoginWindow:
         result =self.login_controllers.login_connect(self.user_name_text, self.password_text)
         if result:
             MessageBoxInfo("Dang nhap", "Thanh cong")
-            self.login_window.close()
+            value.login_window.closeWindow()
             # Đăng nhập thành công, chuyển qua trang menu
-            Main_Windown = MainWindown()
-            Main_Windown.show()
+            value.main_window = MainWindown()
+            value.main_window.showWindow()
         else:
             MessageBoxErr("Dang nhap", "That Bai")
+    def closeWindow(self):
+        self.login_window.hide()
+    def showWindow(self):
+        self.login_window.show()
             
 
 def MessageBoxInfo(title, message):

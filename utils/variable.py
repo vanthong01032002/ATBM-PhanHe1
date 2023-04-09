@@ -1,0 +1,5 @@
+global login_window
+global main_window
+global role_window
+global user_window
+global privileges_window

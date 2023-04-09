@@ -5,7 +5,11 @@ from PyQt5.QtWidgets import QApplication, QPushButton, QWidget
 from PyQt5 import QtCore, QtWidgets
 import messagebox
 from controllers.role_controller import RoleController
+# from views.menu_views import MainWindown
 
+import utils.variable as value
+
+# from views.menu_views import MainWindown
 
 class RoleView:
     def __init__(self):
@@ -218,7 +222,7 @@ class RoleView:
         self.txt_role_password_create.setText("")
         self.txt_role_password_create.move(340, 470)
 
-        #Thiết lập button search
+        #Thiết lập button back
         self.btn_back = QtWidgets.QPushButton(self.main_window)
         self.btn_back.setFixedSize(60,30)  # đặt kích thước là 40x40 pixel
         self.btn_back.setStyleSheet('background-color: #3450D9; color: #fff')
@@ -227,17 +231,14 @@ class RoleView:
         self.btn_back.setCursor(Qt.PointingHandCursor)
 
         self.btn_back.clicked.connect(self.Backmenu)
-
-        # Hiển thị widget
-        self.main_window.show()
+        
     def Backmenu(self):
-
-        from views.menu_views import MainWindown
-
-        self.main_window.close()
-
-        Menu_Windown = MainWindown()
-        Menu_Windown.show()
+        value.role_window.closeWindow()
+        value.main_window.showWindow()
+    def closeWindow(self):
+        self.main_window.hide()
+    def showWindow(self):
+        self.main_window.show()
         
     def on_selectionChanged(self, selected, deselected):
         for ix in selected.indexes():
@@ -257,7 +258,6 @@ class RoleView:
                 self.data_Roles["Oracle maintained"])
             self.txt_Inherited.setText(self.data_Roles["Inherited"])
             self.txt_Implicit.setText(self.data_Roles["Implicit"])
-            # print('Row: {0}, Column: {1}'. format(ix.row(), ix.column()))
       
     def update_list(self):
 
@@ -282,6 +282,7 @@ class RoleView:
                     row, 5, QtWidgets.QTableWidgetItem(str(role[6])))
                 self.table_widget.setItem(
                     row, 6, QtWidgets.QTableWidgetItem(str(role[7])))
+    
     def Add_Role(self):
         if self.txt_role_name_create.text() == '':
             MessageBoxErr("Lỗi", "Vui lòng nhập role name")
@@ -292,7 +293,6 @@ class RoleView:
             self.update_list()
             return result
         
-
     def Recall_Role_Table(self):
         if self.data_Roles["Role Name"] == '':
             MessageBoxErr("Lỗi", "Vui lòng chọn role, bảng hoặc quyền")

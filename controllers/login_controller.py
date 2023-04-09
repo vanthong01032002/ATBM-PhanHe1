@@ -10,7 +10,6 @@ class LoginController:
         self.username_text = username_text
         self.password_text = password_text
        
-        print(login.myList)
         result = connection2(username_text, password_text)
         if result:
             login.myList = [username_text, password_text]
