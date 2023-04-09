@@ -56,7 +56,7 @@ class MainWindown():
         self.button_table.setFixedSize(180, 60)  # Thiết lập kích thước cố định
 
         # Hiện thị danh sách quyền của role/user
-        self.button_pri1 = QtWidgets.QPushButton('Danh sách quyền User/Role', self.main_window)
+        self.button_pri1 = QtWidgets.QPushButton('Danh sách quyền', self.main_window)
         self.button_pri1.move(120,320)
         self.button_pri1.setFixedSize(180, 60)  # Thiết lập kích thước cố định
         # thiết lập hover cursor
