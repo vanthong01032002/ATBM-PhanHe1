@@ -4,3 +4,4 @@ global role_window
 global user_window
 global privileges_window
 global table_window
+global pri_window
