@@ -32,7 +32,7 @@ class TableView:
         self.main_window = QtWidgets.QMainWindow()
 
         # Thiết lập tiêu đề cho cửa sổ
-        self.main_window.setWindowTitle('Danh sách thông tin quyền')
+        self.main_window.setWindowTitle('Danh sách bảng')
         # Thiết lập kích thước cho widget
         self.main_window.resize(700, 520)
 
